@@ -96,10 +96,17 @@
         input[type="checkbox"]:checked { background-color: #17cf54; border-color: #17cf54; }
         input[type="checkbox"] { border-radius: 4px; border-width: 2px; border-color: #8c9388; }
 
-        /* Circular Chart for Modal */
+        /* Circular Chart for Modal - Adjusted duration to 3s */
         .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 250px; }
         .circle-bg { fill: none; stroke: currentColor; stroke-width: 3.8; }
-        .circle { fill: none; stroke-width: 3.8; stroke-linecap: round; stroke-dasharray: 113.1; stroke-dashoffset: 113.1; transition: stroke-dashoffset 1s ease-out; }
+        .circle { 
+            fill: none; 
+            stroke-width: 3.8; 
+            stroke-linecap: round; 
+            stroke-dasharray: 113.1; 
+            stroke-dashoffset: 113.1; 
+            transition: stroke-dashoffset 3s ease-in-out; /* 3 segundos para combinar com o JS */
+        }
         /* Animation class to fill circle */
         .circle.filled { stroke-dashoffset: 28.275; }
     </style>
@@ -570,7 +577,7 @@
                     <path id="loading-circle" class="circle stroke-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center flex-col">
-                    <span class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">...</span>
+                    <span id="loading-percentage" class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">0%</span>
                 </div>
             </div>
             <div class="flex flex-col gap-1 mb-8">
@@ -614,7 +621,6 @@
         const PRECO_SPECTRA = 120.00;
         const PRECO_TRADICIONAL = 85.00;
         
-        // Armazenamento temporário da imagem em Base64 para simular upload
         let tempImageBase64 = null;
 
         // --- CONTROLE DO MENU LATERAL ---
@@ -816,7 +822,7 @@
             }
         }
 
-        // --- LÓGICA EXPORTAR PDF (MODAIS) ---
+        // --- LÓGICA EXPORTAR PDF (MODAIS COM PORCENTAGEM) ---
         function gerarPDF() {
             const inicio = document.getElementById('start-date').value;
             const fim = document.getElementById('end-date').value;
@@ -826,22 +832,36 @@
                 return;
             }
             
-            // 1. Mostrar Modal de Loading
+            // 1. Resetar e Mostrar Modal de Loading
             const loadingModal = document.getElementById('modal-loading');
+            const circle = document.getElementById('loading-circle');
+            const percentageText = document.getElementById('loading-percentage');
+            
+            circle.classList.remove('filled');
+            void circle.offsetWidth; // Força repaint para reiniciar animação
+            percentageText.innerText = '0%';
+            
             loadingModal.classList.remove('hidden-view');
             
-            // Simular Animação de Progresso (Circle)
+            // 2. Iniciar animação do círculo e contador
             setTimeout(() => {
-                document.getElementById('loading-circle').classList.add('filled');
-            }, 100);
+                circle.classList.add('filled');
+            }, 50);
 
-            // 2. Simular espera e Mostrar Modal de Sucesso
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                percentageText.innerText = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 30); // 30ms * 100 = 3000ms (sincronizado com o timeout)
+
+            // 3. Simular espera e Mostrar Modal de Sucesso
             setTimeout(() => {
                 loadingModal.classList.add('hidden-view');
                 document.getElementById('modal-success').classList.remove('hidden-view');
-                
-                // Resetar círculo para próxima vez
-                document.getElementById('loading-circle').classList.remove('filled');
+                circle.classList.remove('filled'); // Limpa para a próxima vez
             }, 3000);
         }
 
