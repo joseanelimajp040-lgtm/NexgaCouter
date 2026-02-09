@@ -2,8 +2,8 @@
 <html class="dark" lang="pt-BR">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>J.A Pet Shop - Contador Nexgard</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>J.A Pet Shop - App Completo</title>
     
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -35,6 +35,13 @@
     </script>
 
     <style>
+        /* Desativa zoom por toque duplo e pinça no CSS também */
+        html, body {
+            touch-action: manipulation; 
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .state-layer { position: absolute; inset: 0; background-color: currentColor; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
         .group:hover .state-layer { opacity: 0.08; }
         .group:active .state-layer { opacity: 0.12; }
@@ -45,7 +52,7 @@
             transform-origin: 50% 50%;
         }
 
-        /* Scrollbar personalizada fina */
+        /* Scrollbar personalizada */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a3d31; border-radius: 4px; }
@@ -53,8 +60,8 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .safe-top { padding-top: env(safe-area-inset-top, 20px); }
-        .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .safe-top { padding-top: max(env(safe-area-inset-top), 20px); }
+        .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 20px); }
 
         body { min-height: 100dvh; }
         
@@ -64,7 +71,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen text-gray-900 dark:text-white transition-colors duration-300 overflow-x-hidden selection:bg-primary selection:text-white">
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen text-gray-900 dark:text-white transition-colors duration-300 overflow-hidden selection:bg-primary selection:text-white">
 
     <div id="view-login" class="view-section w-full h-screen flex flex-col items-center justify-center p-4 fade-in">
         <main class="w-full max-w-md flex flex-col h-full gap-6 justify-center">
@@ -154,7 +161,7 @@
                         </div>
                     </div>
                     <p class="mt-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 300,00</span>
+                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 2.000,00</span>
                     </p>
                 </div>
 
@@ -351,8 +358,7 @@
                     <span class="text-xs font-medium bg-surface-variant text-white/70 px-2 py-0.5 rounded-full">Geral</span>
                 </h3>
                 
-                <div id="historyList" class="flex flex-col gap-4 pb-4">
-                    </div>
+                <div id="historyList" class="flex flex-col gap-4 pb-4"></div>
                 
                 <div class="text-center mt-2" id="emptyHistoryMsg" style="display:none;">
                     <p class="text-gray-500 text-sm">Nenhuma venda registrada.</p>
@@ -361,13 +367,58 @@
         </main>
     </div>
 
+    <div id="view-receipt" class="view-section hidden-view fixed inset-0 z-[60] bg-background-dark font-display text-white overflow-hidden flex flex-col antialiased fade-in">
+        <header class="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-background-dark/90 via-background-dark/50 to-transparent pb-8 safe-top">
+            <div class="px-4 py-2 flex items-center justify-between">
+                <button onclick="navigateTo('view-history')" aria-label="Voltar" class="flex items-center justify-center p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition-colors text-white">
+                    <span class="material-symbols-outlined !text-[28px]">arrow_back</span>
+                </button>
+                <div class="flex-1 text-center pr-10">
+                    <h1 class="text-lg font-bold tracking-tight">Visualizar Nota Fiscal</h1>
+                </div>
+            </div>
+            <div class="px-4 text-center mt-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-dark/60 backdrop-blur-sm border border-white/5 shadow-sm">
+                    <span class="text-gray-300 text-sm font-medium" id="receiptDate">--</span>
+                    <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+                    <span class="text-primary font-bold text-base" id="receiptValue">R$ --</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2 font-medium tracking-wide uppercase" id="receiptProduct">Produto</p>
+            </div>
+        </header>
+
+        <main class="flex-1 relative w-full h-full flex items-center justify-center bg-background-dark overflow-hidden touch-none group">
+            <div class="relative w-full h-full flex items-center justify-center p-4 transition-transform duration-200 ease-out">
+                <div id="receiptImageContainer" class="relative w-full max-w-md aspect-[3/5] bg-surface-dark rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 bg-center bg-cover bg-no-repeat">
+                    <div id="noImagePlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-500">
+                        <span class="material-symbols-outlined text-6xl opacity-20">image_not_supported</span>
+                        <p class="text-sm mt-2 opacity-40">Sem imagem anexada</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="absolute bottom-0 left-0 w-full z-20 safe-bottom">
+            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent -z-10 pointer-events-none"></div>
+            <div class="flex flex-col items-center px-6 pb-6 pt-2 gap-6">
+                <button onclick="navigateTo('view-history')" class="w-full max-w-xs h-14 bg-primary hover:bg-primary/90 active:scale-[0.98] text-background-dark font-bold text-lg rounded-full shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                    <span>Fechar</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
     <script>
-        // --- CONFIGURAÇÕES E CONSTANTES ---
+        // --- CONFIGURAÇÕES ---
         const META_DIARIA = 2000.00;
         const PRECO_SPECTRA = 120.00;
         const PRECO_TRADICIONAL = 85.00;
+        
+        // Armazenamento temporário da imagem em Base64 para simular upload
+        let tempImageBase64 = null;
 
-        // --- NAVEGAÇÃO ENTRE TELAS ---
+        // --- NAVEGAÇÃO ---
         function navigateTo(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
             const view = document.getElementById(viewId);
@@ -415,7 +466,7 @@
             }
         }
 
-        // --- LÓGICA DO DASHBOARD ---
+        // --- LÓGICA DASHBOARD ---
         function renderDashboard() {
             const user = localStorage.getItem('usuarioAtivo');
             if(user) document.getElementById('userAvatar').innerText = user.charAt(0).toUpperCase();
@@ -435,7 +486,6 @@
             document.getElementById('totalValue').innerText = totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('qtySpectra').innerText = qtdSpectra;
             document.getElementById('qtyTraditional').innerText = qtdTradicional;
-
             document.getElementById('barSpectra').style.width = Math.min((qtdSpectra / 20) * 100, 100) + '%';
             document.getElementById('barTraditional').style.width = Math.min((qtdTradicional / 20) * 100, 100) + '%';
 
@@ -453,25 +503,23 @@
             document.getElementById('goalPercentage').innerText = `${((totalValor / META_DIARIA) * 100).toFixed(1)}% da Meta`;
         }
 
-        // --- LÓGICA DE HISTÓRICO (NOVO) ---
+        // --- LÓGICA HISTÓRICO ---
+        let historicoAtualProduto = '';
+
         function abrirHistorico(produtoNome) {
+            historicoAtualProduto = produtoNome;
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             const user = localStorage.getItem('usuarioAtivo') || 'Usuário';
-            
-            // Filtrar por produto
-            const vendasProduto = vendas.filter(v => v.produto === produtoNome).reverse(); // Mais recente primeiro
+            const vendasProduto = vendas.filter(v => v.produto === produtoNome).reverse();
 
-            // Calcular totais
             const totalQtd = vendasProduto.reduce((acc, curr) => acc + curr.quantidade, 0);
             const totalRev = vendasProduto.reduce((acc, curr) => acc + curr.total, 0);
 
-            // Atualizar DOM Header e Hero
             document.getElementById('historyPageTitle').innerText = `Histórico: ${produtoNome.replace('Nexgard ', '')}`;
             document.getElementById('historyProductName').innerHTML = `${produtoNome} <br/><span class="text-white/60 text-lg font-medium">Histórico Geral</span>`;
             document.getElementById('historyTotalSales').innerText = totalQtd;
             document.getElementById('historyTotalRev').innerText = totalRev.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            // Renderizar Lista
             const listContainer = document.getElementById('historyList');
             const emptyMsg = document.getElementById('emptyHistoryMsg');
             listContainer.innerHTML = '';
@@ -485,10 +533,9 @@
                     const dia = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'});
                     const hora = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
                     const idCurto = venda.id.toString().slice(-4);
-                    
-                    // Iniciais do Usuário
                     const iniciais = user.slice(0, 2).toUpperCase();
 
+                    // Botão Ver Nota chama a nova função com o ID da venda
                     const itemHTML = `
                     <div class="group relative overflow-hidden rounded-2xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300">
                         <div class="p-4 flex flex-col gap-4">
@@ -518,7 +565,7 @@
                                     </div>
                                     <span class="text-sm text-white/70">${user}</span>
                                 </div>
-                                <button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors active:scale-95">
+                                <button onclick="verNota(${venda.id})" class="flex items-center gap-1.5 text-primary text-sm font-bold hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors active:scale-95">
                                     <span class="material-symbols-outlined text-lg">visibility</span>
                                     Ver Nota
                                 </button>
@@ -528,16 +575,42 @@
                     listContainer.innerHTML += itemHTML;
                 });
             }
-
             navigateTo('view-history');
         }
 
-        // --- LÓGICA DE NOVA VENDA ---
+        // --- LÓGICA VISUALIZAR NOTA (NOVO) ---
+        function verNota(vendaId) {
+            const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
+            const venda = vendas.find(v => v.id === vendaId);
+            
+            if(venda) {
+                const dataObj = new Date(venda.data);
+                document.getElementById('receiptDate').innerText = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'});
+                document.getElementById('receiptValue').innerText = venda.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('receiptProduct').innerText = `Venda ${venda.produto}`;
+
+                const imgContainer = document.getElementById('receiptImageContainer');
+                const placeholder = document.getElementById('noImagePlaceholder');
+                
+                if (venda.imagemBase64) {
+                    imgContainer.style.backgroundImage = `url('${venda.imagemBase64}')`;
+                    placeholder.style.display = 'none';
+                } else {
+                    imgContainer.style.backgroundImage = 'none';
+                    placeholder.style.display = 'flex';
+                }
+                
+                navigateTo('view-receipt');
+            }
+        }
+
+        // --- LÓGICA NOVA VENDA ---
         function resetNewSaleForm() {
             document.getElementById('qtdInput').value = 1;
             document.getElementById('prod-spectra').checked = true;
             document.getElementById('uploadText').innerText = "Toque para anexar foto";
             document.getElementById('uploadArea').classList.remove('border-primary', 'bg-primary/5');
+            tempImageBase64 = null; // Resetar imagem temporária
         }
 
         function alterarQtd(val) {
@@ -549,8 +622,16 @@
 
         function fileUploaded(input) {
             if(input.files && input.files[0]) {
-                document.getElementById('uploadText').innerText = input.files[0].name;
+                const file = input.files[0];
+                document.getElementById('uploadText').innerText = file.name;
                 document.getElementById('uploadArea').classList.add('border-primary', 'bg-primary/5');
+
+                // Converter para Base64 para salvar no LocalStorage
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    tempImageBase64 = reader.result;
+                }
+                reader.readAsDataURL(file);
             }
         }
 
@@ -575,15 +656,21 @@
                 data: new Date().toISOString(),
                 produto: produto,
                 quantidade: qtd,
-                total: total
+                total: total,
+                imagemBase64: tempImageBase64 // Salvar a imagem codificada
             };
 
+            // Salvar no storage
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             vendas.push(novaVenda);
-            localStorage.setItem('vendasPetShop', JSON.stringify(vendas));
-
-            alert(`Venda Registrada!\nProduto: ${produto}\nTotal: R$ ${total.toFixed(2)}`);
-            navigateTo('view-dashboard');
+            
+            try {
+                localStorage.setItem('vendasPetShop', JSON.stringify(vendas));
+                alert(`Venda Registrada!\nProduto: ${produto}\nTotal: R$ ${total.toFixed(2)}`);
+                navigateTo('view-dashboard');
+            } catch (e) {
+                alert("Erro: A imagem pode ser muito grande para o armazenamento local do navegador.");
+            }
         }
 
         // --- INICIALIZAÇÃO ---
