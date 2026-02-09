@@ -17,6 +17,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
@@ -48,33 +51,65 @@
     </script>
 
     <style>
-        html, body { touch-action: manipulation; overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
-        .view-section main, .menu-scroll { overscroll-behavior-y: auto; -webkit-overflow-scrolling: touch; }
+        html, body {
+            touch-action: manipulation; 
+            overscroll-behavior-y: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .view-section main, .menu-scroll {
+            overscroll-behavior-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .state-layer { position: absolute; inset: 0; background-color: currentColor; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
         .group:hover .state-layer { opacity: 0.08; }
         .group:active .state-layer { opacity: 0.12; }
-        .progress-ring__circle { transition: stroke-dashoffset 0.5s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a3d31; border-radius: 4px; }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .safe-top { padding-top: max(env(safe-area-inset-top), 20px); }
         .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 20px); }
+
         body { min-height: 100dvh; }
+        
         .hidden-view { display: none !important; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleUp { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
         .animate-scale-up { animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
         .ripple { position: relative; overflow: hidden; transform: translate3d(0, 0, 0); }
         .ripple:after { content: ""; display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; background-image: radial-gradient(circle, #fff 10%, transparent 10.01%); background-repeat: no-repeat; background-position: 50%; transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s; }
         .ripple:active:after { transform: scale(0, 0); opacity: .2; transition: 0s; }
+        
         input[type="checkbox"]:checked { background-color: #17cf54; border-color: #17cf54; }
         input[type="checkbox"] { border-radius: 4px; border-width: 2px; border-color: #8c9388; }
+
+        /* Circular Chart for Modal */
         .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 250px; }
         .circle-bg { fill: none; stroke: currentColor; stroke-width: 3.8; }
-        .circle { fill: none; stroke-width: 3.8; stroke-linecap: round; stroke-dasharray: 113.1; stroke-dashoffset: 113.1; transition: stroke-dashoffset 3s ease-in-out; }
+        .circle { 
+            fill: none; 
+            stroke-width: 3.8; 
+            stroke-linecap: round; 
+            stroke-dasharray: 113.1; 
+            stroke-dashoffset: 113.1; 
+            transition: stroke-dashoffset 3s ease-in-out; 
+        }
         .circle.filled { stroke-dashoffset: 28.275; }
     </style>
 </head>
@@ -95,6 +130,7 @@
                     Seja bem-vindo ao seu contador de Nexgard
                 </p>
             </div>
+
             <form id="loginForm" class="flex flex-col gap-5 w-full px-2">
                 <div class="relative group">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ml-4" for="username">Nome de usuário</label>
@@ -105,6 +141,7 @@
                         <input class="block w-full rounded-2xl border-gray-300 dark:border-surface-variant bg-white dark:bg-surface-dark py-4 pl-12 pr-4 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary dark:focus:border-primary dark:focus:ring-primary sm:text-base shadow-sm transition-colors duration-200" id="username" placeholder="Digite seu usuário" type="text" required/>
                     </div>
                 </div>
+                
                 <div class="relative group">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ml-4" for="password">Senha</label>
                     <div class="relative flex items-center">
@@ -117,6 +154,7 @@
                         </button>
                     </div>
                 </div>
+
                 <div class="pt-4 flex flex-col gap-4">
                     <button class="relative group w-full flex justify-center py-4 px-4 border border-transparent rounded-full text-base font-bold text-on-primary bg-primary hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-primary/20 transition-all duration-200 active:scale-[0.98]" type="submit">
                         <span class="state-layer rounded-full"></span>
@@ -124,6 +162,7 @@
                     </button>
                 </div>
             </form>
+            
             <div class="pb-6 text-center mt-auto">
                 <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-500">
                     <span class="material-symbols-outlined text-[16px]">verified_user</span>
@@ -135,7 +174,9 @@
 
     <div id="view-dashboard" class="view-section hidden-view w-full min-h-screen flex flex-col bg-background-light dark:bg-background-dark fade-in">
         <div class="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden shadow-2xl bg-background-light dark:bg-background-dark">
+            
             <div id="menuOverlay" onclick="toggleMenu(false)" class="absolute inset-0 z-40 bg-black/60 backdrop-blur-[1px] transition-opacity duration-300 opacity-0 pointer-events-none"></div>
+            
             <div id="menuDrawer" class="absolute left-0 top-0 bottom-0 z-50 h-full w-[85%] max-w-[340px] flex flex-col bg-[#1e2621] dark:bg-[#1e2621] rounded-r-3xl shadow-2xl transform -translate-x-full transition-transform duration-300 ease-out">
                 <div class="h-12 w-full shrink-0 safe-top"></div>
                 <div class="px-7 py-6 flex flex-col gap-1 shrink-0">
@@ -149,16 +190,43 @@
                 </div>
                 <div class="flex-1 overflow-y-auto px-3 py-2 menu-scroll">
                     <ul class="flex flex-col gap-1">
-                        <li><button onclick="toggleMenu(false)" class="w-full flex h-14 items-center gap-3 rounded-full px-4 bg-primary/20 text-primary hover:bg-primary/25 transition-colors ripple group"><span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">dashboard</span><span class="text-sm font-bold leading-tight tracking-wide">Visão Geral</span></button></li>
-                        <li><button onclick="navigateTo('view-export'); toggleMenu(false)" class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple"><span class="material-symbols-outlined text-[24px]">picture_as_pdf</span><span class="text-sm font-medium leading-tight tracking-wide">Exportar lista em PDF</span></button></li>
-                        <li><button class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple"><span class="material-symbols-outlined text-[24px]">campaign</span><span class="text-sm font-medium leading-tight tracking-wide">Campanha</span></button></li>
-                        <li class="py-2 px-4"><div class="h-px bg-[#424940]"></div></li>
-                        <li><button class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple"><span class="material-symbols-outlined text-[24px]">settings</span><span class="text-sm font-medium leading-tight tracking-wide">Configurações</span></button></li>
+                        <li>
+                            <button onclick="toggleMenu(false)" class="w-full flex h-14 items-center gap-3 rounded-full px-4 bg-primary/20 text-primary hover:bg-primary/25 transition-colors ripple group">
+                                <span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">dashboard</span>
+                                <span class="text-sm font-bold leading-tight tracking-wide">Visão Geral</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="navigateTo('view-export'); toggleMenu(false)" class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple">
+                                <span class="material-symbols-outlined text-[24px]">picture_as_pdf</span>
+                                <span class="text-sm font-medium leading-tight tracking-wide">Exportar lista em PDF</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple">
+                                <span class="material-symbols-outlined text-[24px]">campaign</span>
+                                <span class="text-sm font-medium leading-tight tracking-wide">Campanha</span>
+                            </button>
+                        </li>
+                        <li class="py-2 px-4">
+                            <div class="h-px bg-[#424940]"></div>
+                        </li>
+                        <li>
+                            <button class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple">
+                                <span class="material-symbols-outlined text-[24px]">settings</span>
+                                <span class="text-sm font-medium leading-tight tracking-wide">Configurações</span>
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div class="p-4 mb-6 shrink-0 safe-bottom">
-                    <button onclick="logout()" class="w-full flex h-12 items-center justify-center gap-2 rounded-full border border-[#424940] text-[#c4c7c5] hover:bg-[#424940] hover:text-white hover:border-transparent transition-all ripple"><span class="material-symbols-outlined text-[20px]">logout</span><span class="text-sm font-bold">Sair</span></button>
-                    <div class="mt-4 text-center"><p class="text-xs text-[#8e918f]">Versão 2.4.0</p></div>
+                    <button onclick="logout()" class="w-full flex h-12 items-center justify-center gap-2 rounded-full border border-[#424940] text-[#c4c7c5] hover:bg-[#424940] hover:text-white hover:border-transparent transition-all ripple">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                        <span class="text-sm font-bold">Sair</span>
+                    </button>
+                    <div class="mt-4 text-center">
+                        <p class="text-xs text-[#8e918f]">Versão 2.4.0</p>
+                    </div>
                 </div>
             </div>
             
@@ -173,6 +241,7 @@
             </header>
 
             <main class="flex-1 flex flex-col px-4 pb-28 overflow-y-auto no-scrollbar">
+                
                 <div class="flex flex-col items-center justify-center py-8">
                     <div class="relative flex items-center justify-center w-64 h-64">
                         <svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
@@ -192,13 +261,17 @@
                         Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 300,00</span>
                     </p>
                 </div>
+
                 <div class="flex items-center justify-between mb-4 mt-2 px-2">
                     <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Resumo por Produto</h3>
                 </div>
+
                 <div class="flex flex-col gap-4">
                     <div onclick="abrirHistorico('Nexgard Spectra')" class="cursor-pointer group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md hover:border-primary/30 active:scale-[0.98]">
                         <div class="flex items-center p-4 gap-4">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"><span class="material-symbols-outlined">medication</span></div>
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                <span class="material-symbols-outlined">medication</span>
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">Nexgard Spectra</h4>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Toque para ver histórico</p>
@@ -208,11 +281,16 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Vendidos</p>
                             </div>
                         </div>
-                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant"><div class="h-full bg-purple-500" id="barSpectra" style="width: 0%"></div></div>
+                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant">
+                            <div class="h-full bg-purple-500" id="barSpectra" style="width: 0%"></div>
+                        </div>
                     </div>
+
                     <div onclick="abrirHistorico('Nexgard Tradicional')" class="cursor-pointer group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md hover:border-primary/30 active:scale-[0.98]">
                         <div class="flex items-center p-4 gap-4">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"><span class="material-symbols-outlined">pets</span></div>
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                                <span class="material-symbols-outlined">pets</span>
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">Nexgard Tradicional</h4>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Toque para ver histórico</p>
@@ -222,15 +300,25 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Vendidos</p>
                             </div>
                         </div>
-                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant"><div class="h-full bg-orange-500" id="barTraditional" style="width: 0%"></div></div>
+                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant">
+                            <div class="h-full bg-orange-500" id="barTraditional" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
             </main>
+
             <nav class="absolute bottom-0 left-0 right-0 h-20 bg-white/80 dark:bg-[#151f18]/90 backdrop-blur-md border-t border-gray-200 dark:border-white/5 flex justify-around items-center px-6 z-20 pb-2">
-                <button class="flex flex-col items-center justify-center w-16 h-full text-primary"><span class="material-symbols-outlined text-[28px] font-variation-settings-FILL-1">dashboard</span><span class="text-[10px] font-medium mt-1">Início</span></button>
+                <button class="flex flex-col items-center justify-center w-16 h-full text-primary">
+                    <span class="material-symbols-outlined text-[28px] font-variation-settings-FILL-1">dashboard</span>
+                    <span class="text-[10px] font-medium mt-1">Início</span>
+                </button>
                 <div class="w-16"></div>
-                <button onclick="logout()" class="flex flex-col items-center justify-center w-16 h-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"><span class="material-symbols-outlined text-[28px]">logout</span><span class="text-[10px] font-medium mt-1">Sair</span></button>
+                <button onclick="logout()" class="flex flex-col items-center justify-center w-16 h-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[28px]">logout</span>
+                    <span class="text-[10px] font-medium mt-1">Sair</span>
+                </button>
             </nav>
+
             <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
                 <button onclick="navigateTo('view-new-sale')" class="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-on-primary shadow-lg shadow-primary/40 hover:scale-105 hover:shadow-xl hover:shadow-primary/50 active:scale-95 transition-all duration-300">
                     <span class="material-symbols-outlined text-4xl">add</span>
@@ -469,11 +557,11 @@
                     <div class="flex flex-col gap-3">
                         <label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-high/30 border border-transparent hover:border-outline/30 cursor-pointer transition-all active:scale-[0.99] ripple">
                             <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100/10 flex items-center justify-center text-blue-400"><span class="material-symbols-outlined">pill</span></div><span class="text-base font-medium text-slate-900 dark:text-slate-100">Nexgard Spectra</span></div>
-                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox"/>
+                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox" id="check-spectra"/>
                         </label>
                         <label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-high/30 border border-transparent hover:border-outline/30 cursor-pointer transition-all active:scale-[0.99] ripple">
                             <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-orange-100/10 flex items-center justify-center text-orange-400"><span class="material-symbols-outlined">medication</span></div><span class="text-base font-medium text-slate-900 dark:text-slate-100">Nexgard Tradicional</span></div>
-                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox"/>
+                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox" id="check-tradicional"/>
                         </label>
                     </div>
                 </section>
@@ -518,11 +606,9 @@
     </div>
 
     <script>
-        // --- CONFIGURAÇÕES ---
         const META_DIARIA = 2000.00;
         let tempImageBase64 = null;
 
-        // --- CONTROLE DO MENU LATERAL ---
         function toggleMenu(show) {
             const overlay = document.getElementById('menuOverlay');
             const drawer = document.getElementById('menuDrawer');
@@ -530,7 +616,6 @@
             else { overlay.classList.add('opacity-0', 'pointer-events-none'); drawer.classList.add('-translate-x-full'); }
         }
 
-        // --- NAVEGAÇÃO ---
         function navigateTo(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
             document.getElementById(viewId).classList.remove('hidden-view');
@@ -538,7 +623,6 @@
             if(viewId === 'view-new-sale') resetNewSaleForm();
         }
 
-        // --- SISTEMA DE LOGIN ---
         function checkAuth() {
             const user = localStorage.getItem('usuarioAtivo');
             if(user) { navigateTo('view-dashboard'); } else { navigateTo('view-login'); }
@@ -560,7 +644,6 @@
             if(confirm("Tem certeza que deseja sair?")) { localStorage.removeItem('usuarioAtivo'); checkAuth(); }
         }
 
-        // --- LÓGICA DASHBOARD ---
         function renderDashboard() {
             const user = localStorage.getItem('usuarioAtivo');
             if(user) document.getElementById('userAvatar').innerText = user.charAt(0).toUpperCase();
@@ -589,12 +672,10 @@
             document.getElementById('goalPercentage').innerText = `${((totalValor / META_DIARIA) * 100).toFixed(1)}% da Meta`;
         }
 
-        // --- LÓGICA HISTÓRICO ---
         function abrirHistorico(produtoNome) {
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             const user = localStorage.getItem('usuarioAtivo') || 'Usuário';
             
-            // Filtro mais robusto: verifica o nome completo OU o tipo
             const tipoFiltro = produtoNome.includes('Spectra') ? 'spectra' : 'tradicional';
             const vendasProduto = vendas.filter(v => v.tipo === tipoFiltro).reverse();
 
@@ -651,7 +732,6 @@
             navigateTo('view-history');
         }
 
-        // --- LÓGICA VISUALIZAR NOTA ---
         function verNota(vendaId) {
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             const venda = vendas.find(v => v.id === vendaId);
@@ -659,7 +739,7 @@
                 const dataObj = new Date(venda.data);
                 document.getElementById('receiptDate').innerText = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'});
                 document.getElementById('receiptValue').innerText = venda.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                document.getElementById('receiptProduct').innerText = venda.produtoDetalhe; // Mostra o detalhe do peso
+                document.getElementById('receiptProduct').innerText = venda.produtoDetalhe;
 
                 const imgContainer = document.getElementById('receiptImageContainer');
                 const placeholder = document.getElementById('noImagePlaceholder');
@@ -675,46 +755,105 @@
             }
         }
 
-        // --- LÓGICA EXPORTAR PDF ---
+        // --- GERAÇÃO DE PDF ---
         function gerarPDF() {
             const inicio = document.getElementById('start-date').value;
             const fim = document.getElementById('end-date').value;
+            const checkSpectra = document.getElementById('check-spectra').checked;
+            const checkTrad = document.getElementById('check-tradicional').checked;
+            const user = localStorage.getItem('usuarioAtivo') || 'Usuário';
+
             if(!inicio || !fim) { alert("Por favor, selecione as datas inicial e final."); return; }
+
+            const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             
+            // Filtro
+            const filteredVendas = vendas.filter(v => {
+                const dataVenda = new Date(v.data).toISOString().split('T')[0];
+                const tipoMatch = (v.tipo === 'spectra' && checkSpectra) || (v.tipo === 'tradicional' && checkTrad);
+                return dataVenda >= inicio && dataVenda <= fim && tipoMatch;
+            });
+
+            if(filteredVendas.length === 0) { alert("Nenhuma venda encontrada para o período selecionado."); return; }
+
+            // Group by Date
+            const grouped = {};
+            filteredVendas.forEach(v => {
+                const dataKey = new Date(v.data).toLocaleDateString('pt-BR');
+                if(!grouped[dataKey]) grouped[dataKey] = [];
+                grouped[dataKey].push(v);
+            });
+
+            // Start Loading UI
             const loadingModal = document.getElementById('modal-loading');
             const circle = document.getElementById('loading-circle');
             const percentageText = document.getElementById('loading-percentage');
-            
-            circle.classList.remove('filled');
-            void circle.offsetWidth; 
-            percentageText.innerText = '0%';
+            circle.classList.remove('filled'); void circle.offsetWidth; percentageText.innerText = '0%';
             loadingModal.classList.remove('hidden-view');
-            
             setTimeout(() => { circle.classList.add('filled'); }, 50);
 
+            // Generate PDF Object
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text("Relatório de Vendas - J.A Pet Shop", 14, 20);
+            doc.setFontSize(11);
+            doc.text(`Período: ${new Date(inicio).toLocaleDateString('pt-BR')} a ${new Date(fim).toLocaleDateString('pt-BR')}`, 14, 30);
+            doc.text(`Gerado por: ${user}`, 14, 36);
+
+            let finalY = 40;
+
+            Object.keys(grouped).sort().reverse().forEach(date => {
+                doc.setFontSize(14);
+                doc.setTextColor(23, 207, 84); // Primary Green
+                doc.text(date, 14, finalY + 10);
+                
+                const tableData = grouped[date].map(v => [
+                    new Date(v.data).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                    `#${v.id.toString().slice(-4)}`,
+                    v.produtoDetalhe,
+                    v.quantidade,
+                    v.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                    user
+                ]);
+
+                doc.autoTable({
+                    startY: finalY + 15,
+                    head: [['Hora', 'ID', 'Produto', 'Qtd', 'Total', 'Vendedor']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [23, 207, 84], textColor: [0, 57, 18] },
+                    styles: { fontSize: 9 },
+                    columnStyles: { 2: { cellWidth: 70 } } // Wider column for product name
+                });
+
+                finalY = doc.lastAutoTable.finalY + 5;
+            });
+
+            // Timer & Download
             let progress = 0;
             const interval = setInterval(() => {
                 progress += 1;
                 percentageText.innerText = `${progress}%`;
-                if (progress >= 100) clearInterval(interval);
-            }, 30);
-
-            setTimeout(() => {
-                loadingModal.classList.add('hidden-view');
-                document.getElementById('modal-success').classList.remove('hidden-view');
-                circle.classList.remove('filled');
-            }, 3000);
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    doc.save('Relatorio_Vendas_JAPet.pdf');
+                    setTimeout(() => {
+                        loadingModal.classList.add('hidden-view');
+                        document.getElementById('modal-success').classList.remove('hidden-view');
+                        circle.classList.remove('filled');
+                    }, 500);
+                }
+            }, 30); 
         }
 
-        // --- LÓGICA NOVA VENDA (ATUALIZADA) ---
+        // --- NOVA VENDA ---
         function resetNewSaleForm() {
             document.getElementById('qtdInput').value = 1;
             document.getElementById('prod-spectra').checked = true;
-            toggleProductList('spectra'); // Reseta a lista visível
-            
-            // Limpar seleções de peso
+            toggleProductList('spectra'); 
             document.querySelectorAll('input[name="weight-selection"]').forEach(el => el.checked = false);
-            
             document.getElementById('uploadText').innerText = "Toque para anexar foto";
             document.getElementById('uploadArea').classList.remove('border-primary', 'bg-primary/5');
             tempImageBase64 = null;
@@ -723,20 +862,13 @@
         function toggleProductList(type) {
             const listSpectra = document.getElementById('list-spectra');
             const listTradicional = document.getElementById('list-tradicional');
-            
-            // Limpa a seleção anterior ao trocar de aba
             document.querySelectorAll('input[name="weight-selection"]').forEach(el => el.checked = false);
-
             if (type === 'spectra') {
-                listSpectra.classList.remove('hidden');
-                listSpectra.classList.add('grid');
-                listTradicional.classList.add('hidden');
-                listTradicional.classList.remove('grid');
+                listSpectra.classList.remove('hidden'); listSpectra.classList.add('grid');
+                listTradicional.classList.add('hidden'); listTradicional.classList.remove('grid');
             } else {
-                listSpectra.classList.add('hidden');
-                listSpectra.classList.remove('grid');
-                listTradicional.classList.remove('hidden');
-                listTradicional.classList.add('grid');
+                listSpectra.classList.add('hidden'); listSpectra.classList.remove('grid');
+                listTradicional.classList.remove('hidden'); listTradicional.classList.add('grid');
             }
         }
 
@@ -759,30 +891,23 @@
         }
 
         function salvarVenda() {
-            // 1. Identificar Tipo (Spectra ou Tradicional)
             const isSpectra = document.getElementById('prod-spectra').checked;
             const tipo = isSpectra ? 'spectra' : 'tradicional';
-
-            // 2. Identificar Peso e Preço Selecionado
             const selectedWeight = document.querySelector('input[name="weight-selection"]:checked');
             
-            if (!selectedWeight) {
-                alert("Por favor, selecione o peso do animal.");
-                return;
-            }
+            if (!selectedWeight) { alert("Por favor, selecione o peso do animal."); return; }
 
             const precoUnitario = parseFloat(selectedWeight.value);
             const produtoNomeDetalhe = (isSpectra ? "Nexgard Spectra " : "Nexgard Tradicional ") + selectedWeight.getAttribute('data-name');
-
             const qtd = parseInt(document.getElementById('qtdInput').value);
             const total = qtd * precoUnitario;
 
             const novaVenda = {
                 id: Date.now(),
                 data: new Date().toISOString(),
-                tipo: tipo, // 'spectra' ou 'tradicional' para filtros
-                produtoDetalhe: produtoNomeDetalhe, // Nome completo ex: "Nexgard Spectra 2-3.5kg"
-                produto: isSpectra ? 'Nexgard Spectra' : 'Nexgard Tradicional', // Nome genérico para dashboard
+                tipo: tipo,
+                produtoDetalhe: produtoNomeDetalhe,
+                produto: isSpectra ? 'Nexgard Spectra' : 'Nexgard Tradicional',
                 quantidade: qtd,
                 total: total,
                 imagemBase64: tempImageBase64
@@ -790,14 +915,11 @@
 
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             vendas.push(novaVenda);
-            
             try {
                 localStorage.setItem('vendasPetShop', JSON.stringify(vendas));
                 alert(`Venda Registrada!\n${produtoNomeDetalhe}\nTotal: R$ ${total.toFixed(2)}`);
                 navigateTo('view-dashboard');
-            } catch (e) {
-                alert("Erro: A imagem pode ser muito grande.");
-            }
+            } catch (e) { alert("Erro: A imagem pode ser muito grande."); }
         }
 
         window.addEventListener('load', () => {
