@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>J.A Pet Shop - App Completo</title>
+    <title>J.A Pet Shop - Contador Nexgard</title>
     
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -35,11 +35,17 @@
     </script>
 
     <style>
-        /* Desativa zoom por toque duplo e pinça no CSS também */
+        /* Desativa comportamentos de toque nativos que causam zoom */
         html, body {
             touch-action: manipulation; 
-            overscroll-behavior: none;
+            overscroll-behavior-y: none; /* Evita o 'bounce' elástico do iOS no body */
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Re-habilita scroll interno suave */
+        .view-section main {
+            overscroll-behavior-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .state-layer { position: absolute; inset: 0; background-color: currentColor; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
@@ -161,7 +167,7 @@
                         </div>
                     </div>
                     <p class="mt-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 2.000,00</span>
+                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 300,00</span>
                     </p>
                 </div>
 
@@ -324,8 +330,8 @@
             </button>
         </header>
         
-        <main class="flex-1 flex flex-col p-4 gap-6 pb-24 overflow-y-auto custom-scrollbar">
-            <div class="relative overflow-hidden rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-lg">
+        <main class="flex-1 flex flex-col p-4 gap-6 pb-32 overflow-y-auto custom-scrollbar">
+            <div class="shrink-0 relative overflow-hidden rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-lg">
                 <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="flex items-start justify-between relative z-10 mb-4">
                     <div>
@@ -578,7 +584,7 @@
             navigateTo('view-history');
         }
 
-        // --- LÓGICA VISUALIZAR NOTA (NOVO) ---
+        // --- LÓGICA VISUALIZAR NOTA ---
         function verNota(vendaId) {
             const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
             const venda = vendas.find(v => v.id === vendaId);
