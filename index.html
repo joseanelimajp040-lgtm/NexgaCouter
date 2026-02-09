@@ -33,6 +33,8 @@
                         "surface-dark": "#1c2b21", 
                         "surface-variant": "#2a3d31",
                         "outline-dark": "#8b938c",
+                        "outline": "#8c9388",
+                        "surface-container-high": "#28312b"
                     },
                     fontFamily: { "display": ["Manrope", "sans-serif"] },
                     borderRadius: {"DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "2xl": "3rem", "full": "9999px"},
@@ -83,10 +85,13 @@
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Ripple Effect */
+        /* Ripple Effect & Checkboxes */
         .ripple { position: relative; overflow: hidden; transform: translate3d(0, 0, 0); }
         .ripple:after { content: ""; display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; background-image: radial-gradient(circle, #fff 10%, transparent 10.01%); background-repeat: no-repeat; background-position: 50%; transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s; }
         .ripple:active:after { transform: scale(0, 0); opacity: .2; transition: 0s; }
+        
+        input[type="checkbox"]:checked { background-color: #17cf54; border-color: #17cf54; }
+        input[type="checkbox"] { border-radius: 4px; border-width: 2px; border-color: #8c9388; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen text-gray-900 dark:text-white transition-colors duration-300 overflow-hidden selection:bg-primary selection:text-white">
@@ -173,7 +178,7 @@
                             </button>
                         </li>
                         <li>
-                            <button class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple">
+                            <button onclick="navigateTo('view-export'); toggleMenu(false)" class="w-full flex h-14 items-center gap-3 rounded-full px-4 text-[#c4c7c5] hover:bg-[#424940]/50 hover:text-white transition-colors ripple">
                                 <span class="material-symbols-outlined text-[24px]">picture_as_pdf</span>
                                 <span class="text-sm font-medium leading-tight tracking-wide">Exportar lista em PDF</span>
                             </button>
@@ -482,6 +487,68 @@
         </footer>
     </div>
 
+    <div id="view-export" class="view-section hidden-view w-full h-screen flex flex-col bg-background-light dark:bg-background-dark fade-in">
+        <div class="relative w-full h-full flex flex-col flex-1 max-w-md mx-auto bg-background-light dark:bg-background-dark">
+            <header class="flex items-center h-16 px-4 pt-2 shrink-0 safe-top">
+                <button onclick="navigateTo('view-dashboard')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant-dark/30 ripple text-slate-900 dark:text-slate-100">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h1 class="ml-4 text-[22px] font-normal text-slate-900 dark:text-slate-100">Exportar PDF</h1>
+            </header>
+            <main class="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
+                <section class="flex flex-col gap-4">
+                    <h2 class="text-sm font-medium text-primary tracking-wide uppercase">Período</h2>
+                    <div class="flex flex-col gap-4">
+                        <div class="relative group">
+                            <label class="absolute -top-2 left-3 bg-background-light dark:bg-background-dark px-1 text-xs text-primary z-10" for="start-date">Data Inicial</label>
+                            <div class="flex items-center border border-primary rounded-[4px] px-3 h-14 hover:border-primary-container focus-within:border-2 focus-within:border-primary bg-transparent transition-all">
+                                <input class="w-full bg-transparent border-none p-0 text-base text-slate-900 dark:text-slate-100 focus:ring-0 appearance-none" id="start-date" type="date"/>
+                                <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">calendar_today</span>
+                            </div>
+                        </div>
+                        <div class="relative group">
+                            <label class="absolute -top-2 left-3 bg-background-light dark:bg-background-dark px-1 text-xs text-outline group-hover:text-slate-900 dark:group-hover:text-slate-100 group-focus-within:text-primary z-10 transition-colors" for="end-date">Data Final</label>
+                            <div class="flex items-center border border-outline rounded-[4px] px-3 h-14 hover:border-slate-900 dark:hover:border-slate-100 focus-within:border-2 focus-within:border-primary bg-transparent transition-all">
+                                <input class="w-full bg-transparent border-none p-0 text-base text-slate-900 dark:text-slate-100 focus:ring-0 appearance-none" id="end-date" type="date"/>
+                                <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">event</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="flex flex-col gap-4">
+                    <h2 class="text-sm font-medium text-primary tracking-wide uppercase">Filtrar Produtos</h2>
+                    <div class="flex flex-col gap-3">
+                        <label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-high/30 border border-transparent hover:border-outline/30 cursor-pointer transition-all active:scale-[0.99] ripple">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-100/10 flex items-center justify-center text-blue-400">
+                                    <span class="material-symbols-outlined">pill</span>
+                                </div>
+                                <span class="text-base font-medium text-slate-900 dark:text-slate-100">Nexgard Spectra</span>
+                            </div>
+                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox"/>
+                        </label>
+                        <label class="flex items-center justify-between p-4 rounded-xl bg-surface-container-high/30 border border-transparent hover:border-outline/30 cursor-pointer transition-all active:scale-[0.99] ripple">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-orange-100/10 flex items-center justify-center text-orange-400">
+                                    <span class="material-symbols-outlined">medication</span>
+                                </div>
+                                <span class="text-base font-medium text-slate-900 dark:text-slate-100">Nexgard Tradicional</span>
+                            </div>
+                            <input checked="" class="w-5 h-5 text-primary rounded focus:ring-primary focus:ring-offset-background-dark bg-transparent border-outline" type="checkbox"/>
+                        </label>
+                    </div>
+                </section>
+                <div class="flex-grow"></div>
+            </main>
+            <div class="p-4 pb-8 bg-background-light dark:bg-background-dark mt-auto border-t border-outline/10 safe-bottom">
+                <button onclick="gerarPDF()" class="w-full h-14 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-on-primary rounded-full font-bold text-[16px] shadow-lg shadow-primary/20 transition-all active:scale-[0.98] ripple">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                    Gerar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- CONFIGURAÇÕES ---
         const META_DIARIA = 2000.00;
@@ -491,7 +558,7 @@
         // Armazenamento temporário da imagem em Base64 para simular upload
         let tempImageBase64 = null;
 
-        // --- CONTROLE DO MENU LATERAL (NOVO) ---
+        // --- CONTROLE DO MENU LATERAL ---
         function toggleMenu(show) {
             const overlay = document.getElementById('menuOverlay');
             const drawer = document.getElementById('menuDrawer');
@@ -622,7 +689,6 @@
                     const idCurto = venda.id.toString().slice(-4);
                     const iniciais = user.slice(0, 2).toUpperCase();
 
-                    // Botão Ver Nota chama a nova função com o ID da venda
                     const itemHTML = `
                     <div class="group relative overflow-hidden rounded-2xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300">
                         <div class="p-4 flex flex-col gap-4">
@@ -689,6 +755,21 @@
                 
                 navigateTo('view-receipt');
             }
+        }
+
+        // --- LÓGICA EXPORTAR PDF (NOVO) ---
+        function gerarPDF() {
+            const inicio = document.getElementById('start-date').value;
+            const fim = document.getElementById('end-date').value;
+            
+            if(!inicio || !fim) {
+                alert("Por favor, selecione as datas inicial e final.");
+                return;
+            }
+            
+            // Simulação de geração
+            alert(`PDF gerado com sucesso!\nPeríodo: ${inicio} até ${fim}\nO download iniciará em breve.`);
+            navigateTo('view-dashboard');
         }
 
         // --- LÓGICA NOVA VENDA ---
@@ -761,7 +842,18 @@
         }
 
         // --- INICIALIZAÇÃO ---
-        window.addEventListener('load', checkAuth);
+        window.addEventListener('load', () => {
+            checkAuth();
+            
+            // Definir datas padrão no export (hoje)
+            const hoje = new Date().toISOString().split('T')[0];
+            const inicioMes = new Date();
+            inicioMes.setDate(1);
+            const inicioMesStr = inicioMes.toISOString().split('T')[0];
+            
+            document.getElementById('end-date').value = hoje;
+            document.getElementById('start-date').value = inicioMesStr;
+        });
     </script>
     
     <script>
