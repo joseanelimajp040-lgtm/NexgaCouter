@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>J.A Pet Shop - App Completo</title>
+    <title>J.A Pet Shop - Contador Nexgard</title>
     
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -23,8 +23,8 @@
                         "on-primary-container": "#76ff98",
                         "background-light": "#f6f8f6",
                         "background-dark": "#112116",
-                        "surface-dark": "#1d2a21",
-                        "surface-variant-dark": "#414942",
+                        "surface-dark": "#1c2b21", 
+                        "surface-variant": "#2a3d31",
                         "outline-dark": "#8b938c",
                     },
                     fontFamily: { "display": ["Manrope", "sans-serif"] },
@@ -35,7 +35,6 @@
     </script>
 
     <style>
-        /* Animações e Utilitários */
         .state-layer { position: absolute; inset: 0; background-color: currentColor; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
         .group:hover .state-layer { opacity: 0.08; }
         .group:active .state-layer { opacity: 0.12; }
@@ -46,6 +45,11 @@
             transform-origin: 50% 50%;
         }
 
+        /* Scrollbar personalizada fina */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a3d31; border-radius: 4px; }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -54,10 +58,8 @@
 
         body { min-height: 100dvh; }
         
-        /* Classe para esconder telas */
+        /* Sistema de Views */
         .hidden-view { display: none !important; }
-        
-        /* Animação suave entre telas */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -87,7 +89,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 dark:text-gray-400">
                             <span class="material-symbols-outlined text-[24px]">person</span>
                         </div>
-                        <input class="block w-full rounded-2xl border-gray-300 dark:border-surface-variant-dark bg-white dark:bg-surface-dark py-4 pl-12 pr-4 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary dark:focus:border-primary dark:focus:ring-primary sm:text-base shadow-sm transition-colors duration-200" id="username" placeholder="Digite seu usuário" type="text" required/>
+                        <input class="block w-full rounded-2xl border-gray-300 dark:border-surface-variant bg-white dark:bg-surface-dark py-4 pl-12 pr-4 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary dark:focus:border-primary dark:focus:ring-primary sm:text-base shadow-sm transition-colors duration-200" id="username" placeholder="Digite seu usuário" type="text" required/>
                     </div>
                 </div>
                 
@@ -97,7 +99,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 dark:text-gray-400">
                             <span class="material-symbols-outlined text-[24px]">lock</span>
                         </div>
-                        <input class="block w-full rounded-2xl border-gray-300 dark:border-surface-variant-dark bg-white dark:bg-surface-dark py-4 pl-12 pr-12 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary dark:focus:border-primary dark:focus:ring-primary sm:text-base shadow-sm transition-colors duration-200" id="password" placeholder="••••••••" type="password" required/>
+                        <input class="block w-full rounded-2xl border-gray-300 dark:border-surface-variant bg-white dark:bg-surface-dark py-4 pl-12 pr-12 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary dark:focus:border-primary dark:focus:ring-primary sm:text-base shadow-sm transition-colors duration-200" id="password" placeholder="••••••••" type="password" required/>
                         <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" type="button" onclick="togglePassword()">
                             <span class="material-symbols-outlined text-[24px]" id="eyeIcon">visibility_off</span>
                         </button>
@@ -129,7 +131,7 @@
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <h1 class="text-xl md:text-2xl font-normal tracking-wide text-center">Painel de Vendas</h1>
-                <div class="w-12 h-12 rounded-full overflow-hidden bg-surface-variant-dark border border-white/10 relative">
+                <div class="w-12 h-12 rounded-full overflow-hidden bg-surface-variant border border-white/10 relative">
                     <div class="w-full h-full bg-primary flex items-center justify-center text-on-primary font-bold text-xl" id="userAvatar">U</div>
                 </div>
             </header>
@@ -139,7 +141,7 @@
                 <div class="flex flex-col items-center justify-center py-8">
                     <div class="relative flex items-center justify-center w-64 h-64">
                         <svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
-                            <circle class="text-surface-variant-dark/30 dark:text-surface-variant-dark" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-width="8"></circle>
+                            <circle class="text-surface-variant/30 dark:text-surface-variant" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-width="8"></circle>
                             <circle id="progressCircle" class="progress-ring__circle" cx="50" cy="50" fill="transparent" r="45" stroke="#17cf54" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" stroke-width="8"></circle>
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
@@ -152,7 +154,7 @@
                         </div>
                     </div>
                     <p class="mt-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 2.000,00</span>
+                        Meta Diária: <span class="font-bold text-gray-900 dark:text-white">R$ 300,00</span>
                     </p>
                 </div>
 
@@ -161,40 +163,40 @@
                 </div>
 
                 <div class="flex flex-col gap-4">
-                    <div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md active:scale-[0.98]">
+                    <div onclick="abrirHistorico('Nexgard Spectra')" class="cursor-pointer group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md hover:border-primary/30 active:scale-[0.98]">
                         <div class="flex items-center p-4 gap-4">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
                                 <span class="material-symbols-outlined">medication</span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">Nexgard Spectra</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Proteção total</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Toque para ver histórico</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-base font-bold text-gray-900 dark:text-white" id="qtySpectra">0</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Vendidos</p>
                             </div>
                         </div>
-                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant-dark">
+                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant">
                             <div class="h-full bg-purple-500" id="barSpectra" style="width: 0%"></div>
                         </div>
                     </div>
 
-                    <div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md active:scale-[0.98]">
+                    <div onclick="abrirHistorico('Nexgard Tradicional')" class="cursor-pointer group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5 transition-all hover:shadow-md hover:border-primary/30 active:scale-[0.98]">
                         <div class="flex items-center p-4 gap-4">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
                                 <span class="material-symbols-outlined">pets</span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base font-bold text-gray-900 dark:text-white truncate">Nexgard Tradicional</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Proteção clássica</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Toque para ver histórico</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-base font-bold text-gray-900 dark:text-white" id="qtyTraditional">0</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Vendidos</p>
                             </div>
                         </div>
-                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant-dark">
+                        <div class="h-1 w-full bg-gray-100 dark:bg-surface-variant">
                             <div class="h-full bg-orange-500" id="barTraditional" style="width: 0%"></div>
                         </div>
                     </div>
@@ -206,7 +208,8 @@
                     <span class="material-symbols-outlined text-[28px] font-variation-settings-FILL-1">dashboard</span>
                     <span class="text-[10px] font-medium mt-1">Início</span>
                 </button>
-                <div class="w-16"></div> <button onclick="logout()" class="flex flex-col items-center justify-center w-16 h-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <div class="w-16"></div>
+                <button onclick="logout()" class="flex flex-col items-center justify-center w-16 h-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <span class="material-symbols-outlined text-[28px]">logout</span>
                     <span class="text-[10px] font-medium mt-1">Sair</span>
                 </button>
@@ -235,7 +238,6 @@
 
             <main class="flex-1 overflow-y-auto no-scrollbar px-4 pb-32">
                 <div class="space-y-8 pt-4">
-                    
                     <section>
                         <h2 class="text-xl font-bold mb-4 px-1">Selecione o Produto</h2>
                         <div class="bg-surface-dark/10 dark:bg-surface-dark p-1 rounded-full flex relative overflow-hidden">
@@ -304,6 +306,61 @@
         </div>
     </div>
 
+    <div id="view-history" class="view-section hidden-view w-full h-screen flex flex-col bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display fade-in">
+        <header class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-gray-200 dark:border-white/5">
+            <button onclick="navigateTo('view-dashboard')" class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <span class="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+            <h1 class="text-lg font-bold truncate px-2" id="historyPageTitle">Histórico</h1>
+            <button class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <span class="material-symbols-outlined text-2xl">filter_list</span>
+            </button>
+        </header>
+        
+        <main class="flex-1 flex flex-col p-4 gap-6 pb-24 overflow-y-auto custom-scrollbar">
+            <div class="relative overflow-hidden rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-lg">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex items-start justify-between relative z-10 mb-4">
+                    <div>
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20">Em Estoque</span>
+                        <h2 class="text-2xl font-bold leading-tight" id="historyProductName">Produto</h2>
+                    </div>
+                    <div class="bg-white/10 p-3 rounded-xl backdrop-blur-sm border border-white/5">
+                        <span class="material-symbols-outlined text-primary text-3xl">medication</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 relative z-10">
+                    <div class="bg-background-dark/50 rounded-xl p-3 border border-white/5">
+                        <p class="text-white/60 text-xs font-medium mb-1">Vendas (Mês)</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-xl font-bold text-white" id="historyTotalSales">0</span>
+                        </div>
+                    </div>
+                    <div class="bg-background-dark/50 rounded-xl p-3 border border-white/5">
+                        <p class="text-white/60 text-xs font-medium mb-1">Total Arrecadado</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-xl font-bold text-white" id="historyTotalRev">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-bold px-1 flex items-center gap-2 text-slate-800 dark:text-white">
+                    Transações Recentes
+                    <span class="text-xs font-medium bg-surface-variant text-white/70 px-2 py-0.5 rounded-full">Geral</span>
+                </h3>
+                
+                <div id="historyList" class="flex flex-col gap-4 pb-4">
+                    </div>
+                
+                <div class="text-center mt-2" id="emptyHistoryMsg" style="display:none;">
+                    <p class="text-gray-500 text-sm">Nenhuma venda registrada.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
     <script>
         // --- CONFIGURAÇÕES E CONSTANTES ---
         const META_DIARIA = 2000.00;
@@ -312,14 +369,10 @@
 
         // --- NAVEGAÇÃO ENTRE TELAS ---
         function navigateTo(viewId) {
-            // Esconde todas as views
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
-            
-            // Mostra a view desejada
             const view = document.getElementById(viewId);
             view.classList.remove('hidden-view');
             
-            // Ações específicas ao abrir telas
             if(viewId === 'view-dashboard') renderDashboard();
             if(viewId === 'view-new-sale') resetNewSaleForm();
         }
@@ -379,16 +432,13 @@
                 if(venda.produto === 'Nexgard Tradicional') qtdTradicional += venda.quantidade;
             });
 
-            // Atualiza Textos
             document.getElementById('totalValue').innerText = totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('qtySpectra').innerText = qtdSpectra;
             document.getElementById('qtyTraditional').innerText = qtdTradicional;
 
-            // Barras de Progresso (Escala Visual: Meta arbitrária de 20 un para a barra encher)
             document.getElementById('barSpectra').style.width = Math.min((qtdSpectra / 20) * 100, 100) + '%';
             document.getElementById('barTraditional').style.width = Math.min((qtdTradicional / 20) * 100, 100) + '%';
 
-            // Gráfico Circular
             const circle = document.getElementById('progressCircle');
             const radius = circle.r.baseVal.value;
             const circumference = radius * 2 * Math.PI;
@@ -401,6 +451,85 @@
             circle.style.strokeDashoffset = offset;
 
             document.getElementById('goalPercentage').innerText = `${((totalValor / META_DIARIA) * 100).toFixed(1)}% da Meta`;
+        }
+
+        // --- LÓGICA DE HISTÓRICO (NOVO) ---
+        function abrirHistorico(produtoNome) {
+            const vendas = JSON.parse(localStorage.getItem('vendasPetShop')) || [];
+            const user = localStorage.getItem('usuarioAtivo') || 'Usuário';
+            
+            // Filtrar por produto
+            const vendasProduto = vendas.filter(v => v.produto === produtoNome).reverse(); // Mais recente primeiro
+
+            // Calcular totais
+            const totalQtd = vendasProduto.reduce((acc, curr) => acc + curr.quantidade, 0);
+            const totalRev = vendasProduto.reduce((acc, curr) => acc + curr.total, 0);
+
+            // Atualizar DOM Header e Hero
+            document.getElementById('historyPageTitle').innerText = `Histórico: ${produtoNome.replace('Nexgard ', '')}`;
+            document.getElementById('historyProductName').innerHTML = `${produtoNome} <br/><span class="text-white/60 text-lg font-medium">Histórico Geral</span>`;
+            document.getElementById('historyTotalSales').innerText = totalQtd;
+            document.getElementById('historyTotalRev').innerText = totalRev.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            // Renderizar Lista
+            const listContainer = document.getElementById('historyList');
+            const emptyMsg = document.getElementById('emptyHistoryMsg');
+            listContainer.innerHTML = '';
+
+            if (vendasProduto.length === 0) {
+                emptyMsg.style.display = 'block';
+            } else {
+                emptyMsg.style.display = 'none';
+                vendasProduto.forEach(venda => {
+                    const dataObj = new Date(venda.data);
+                    const dia = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'});
+                    const hora = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+                    const idCurto = venda.id.toString().slice(-4);
+                    
+                    // Iniciais do Usuário
+                    const iniciais = user.slice(0, 2).toUpperCase();
+
+                    const itemHTML = `
+                    <div class="group relative overflow-hidden rounded-2xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300">
+                        <div class="p-4 flex flex-col gap-4">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-surface-variant text-primary shrink-0">
+                                        <span class="material-symbols-outlined">receipt_long</span>
+                                    </div>
+                                    <div class="flex flex-col min-w-0">
+                                        <p class="font-bold text-base truncate text-white group-hover:text-primary transition-colors">Venda #${idCurto}</p>
+                                        <div class="flex items-center gap-1.5 text-sm text-white/50">
+                                            <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                            <span class="truncate">${dia} • ${hora}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-end shrink-0">
+                                    <span class="text-lg font-bold text-white">${venda.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                    <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full mt-1">${venda.quantidade} un</span>
+                                </div>
+                            </div>
+                            <div class="h-px w-full bg-white/5"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white border border-white/10">
+                                        ${iniciais}
+                                    </div>
+                                    <span class="text-sm text-white/70">${user}</span>
+                                </div>
+                                <button class="flex items-center gap-1.5 text-primary text-sm font-bold hover:bg-primary/10 px-3 py-1.5 rounded-full transition-colors active:scale-95">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                    Ver Nota
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                    listContainer.innerHTML += itemHTML;
+                });
+            }
+
+            navigateTo('view-history');
         }
 
         // --- LÓGICA DE NOVA VENDA ---
