@@ -5,6 +5,13 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
     <title>J.A Pet Shop - Contador Nexgard</title>
     
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="J.A Pet">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#112116">
+    
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
@@ -681,6 +688,17 @@
 
         // --- INICIALIZAÇÃO ---
         window.addEventListener('load', checkAuth);
+    </script>
+    
+    <script>
+        // Registro do PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('PWA Service Worker registrado!', reg))
+                    .catch(err => console.log('Erro ao registrar PWA:', err));
+            });
+        }
     </script>
 </body>
 </html>
